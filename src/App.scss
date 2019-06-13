@@ -1,0 +1,38 @@
+body {
+    font-family: 'Raleway', sans-serif;
+
+    .current-weather {
+        .btn-block {
+            max-width: 120px;
+        }
+    }
+
+    .weather-station {
+        .num {
+            font-size: 27px;
+            font-weight: bolder;
+        }
+    }
+
+    .num {
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .weather-icon {
+        font-size: 27px;
+    }
+
+    .how-is-element {
+        .card {
+            min-width: 170px;
+        }
+    }
+
+    /*Large devices (desktops, 992px and up)*/
+    @media (min-width: 992px) {
+        .statistics-element {
+            min-width: 350px;
+        }
+    }
+
+}
