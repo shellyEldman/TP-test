@@ -1,81 +1,76 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import firebase from '../../config/fbConfig';
 
-const StatisticsElement = ({temperature, humidity, pressure}) => {
-    let sumT = 0;
-    let minT = '';
-    let maxT = '';
+const db = firebase.firestore();
 
-    let sumH = 0;
-    let minH = '';
-    let maxH = '';
+const StatisticsElement = () => {
+    const [temp_info, setTemp] = useState('');
+    const [humi_info, setHumi] = useState('');
+    const [pressure_info, setPressure] = useState('');
 
-    let sumP = 0;
-    let minP = '';
-    let maxP = '';
+    useEffect(() => {
+        const unsubscribe = db.collection("info").doc('temperature_info')
+            .onSnapshot((doc) => {
+                if (doc.data()) {
+                    setTemp({...doc.data()});
+                }
+            });
+        return () => unsubscribe();
+    }, []);
 
-    temperature.forEach(i => {
-        sumT += i;
-        if (i < minT || minT === '') {
-            minT = i;
-        }
-        if (i > maxT || maxT === '') {
-            maxT = i;
-        }
-    });
-    const avgT = (sumT / temperature.length).toFixed(2);
+    useEffect(() => {
+        const unsubscribe = db.collection("info").doc('humidity_info')
+            .onSnapshot((doc) => {
+                if (doc.data()) {
+                    setHumi({...doc.data()});
+                }
+            });
+        return () => unsubscribe();
+    }, []);
 
-    humidity.forEach(i => {
-        sumH += i;
-        if (i < minH || minH === '') {
-            minH = i;
-        }
-        if (i > maxH || maxH === '') {
-            maxH = i;
-        }
-    });
-    const avgH = (sumH / humidity.length).toFixed(2);
+    useEffect(() => {
+        const unsubscribe = db.collection("info").doc('pressure_info')
+            .onSnapshot((doc) => {
+                if (doc.data()) {
+                    setPressure({...doc.data()});
+                }
+            });
+        return () => unsubscribe();
+    }, []);
 
-    pressure.forEach(i => {
-        sumP += i;
-        if (i < minP || minP === '') {
-            minP = i;
-        }
-        if (i > maxP || maxP === '') {
-            maxP = i;
-        }
-    });
-    const avgP = (sumP / pressure.length).toFixed(2);
-
-
-    return (
-        <div className="statistics-element">
-            <div className="card">
-                <div className="card-header font-weight-bold bg-info">
-                    Statistics
-                </div>
-                <div className="card-body d-flex flex-column flex-sm-row justify-content-center">
-                    <div className="mx-2 text-left">
-                        <p className="font-weight-bolder mb-0 mt-2 mt-sm-0">Temperature</p>
-                        <p className="my-1">Avg: <span className="num">{avgT}</span></p>
-                        <p className="my-1">Min: <span className="num">{minT}</span></p>
-                        <p className="my-1">Max: <span className="num">{maxT}</span></p>
+    if (temp_info !== '' && humi_info !== '' && pressure_info !== '') {
+        return (
+            <div className="statistics-element">
+                <div className="card">
+                    <div className="card-header font-weight-bold bg-info">
+                        Statistics
                     </div>
-                    <div className="mx-2 text-left">
-                        <p className="font-weight-bolder mb-0 mt-2 mt-sm-0">Humidity</p>
-                        <p className="my-1">Avg: <span className="num">{avgH}</span></p>
-                        <p className="my-1">Min: <span className="num">{minH}</span></p>
-                        <p className="my-1">Max: <span className="num">{maxH}</span></p>
-                    </div>
-                    <div className="mx-2 text-left">
-                        <p className="font-weight-bolder mb-0 mt-2 mt-sm-0">Pressure</p>
-                        <p className="my-1">Avg: <span className="num">{avgP}</span></p>
-                        <p className="my-1">Min: <span className="num">{minP}</span></p>
-                        <p className="my-1">Max: <span className="num">{maxP}</span></p>
+                    <div className="card-body d-flex flex-column flex-sm-row justify-content-center">
+                        <div className="mx-2 text-left">
+                            <p className="font-weight-bolder mb-0 mt-2 mt-sm-0">Temperature</p>
+                            <p className="my-1">Avg: <span className="num">{temp_info.avg.toFixed(2)}</span></p>
+                            <p className="my-1">Min: <span className="num">{temp_info.min}</span></p>
+                            <p className="my-1">Max: <span className="num">{temp_info.max}</span></p>
+                        </div>
+                        <div className="mx-2 text-left">
+                            <p className="font-weight-bolder mb-0 mt-2 mt-sm-0">Humidity</p>
+                            <p className="my-1">Avg: <span className="num">{humi_info.avg.toFixed(2)}</span></p>
+                            <p className="my-1">Min: <span className="num">{humi_info.min}</span></p>
+                            <p className="my-1">Max: <span className="num">{humi_info.max}</span></p>
+                        </div>
+                        <div className="mx-2 text-left">
+                            <p className="font-weight-bolder mb-0 mt-2 mt-sm-0">Pressure</p>
+                            <p className="my-1">Avg: <span className="num">{pressure_info.avg.toFixed(2)}</span></p>
+                            <p className="my-1">Min: <span className="num">{pressure_info.min}</span></p>
+                            <p className="my-1">Max: <span className="num">{pressure_info.max}</span></p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+    } else {
+        return null;
+    }
 };
 
 export default StatisticsElement;

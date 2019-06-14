@@ -49,11 +49,10 @@ class InfoElement extends React.Component {
                     <div className="container text-center">
                         <div className="row">
                             <div className="col-sm mt-4">
-                                <AmericanElement temperature={this.state.temperature}/>
+                                <AmericanElement/>
                             </div>
                             <div className="col-sm mt-4">
-                                <StatisticsElement temperature={this.state.temperature} humidity={this.state.humidity}
-                                                   pressure={this.state.pressure}/>
+                                <StatisticsElement />
                             </div>
                             <div className="col-sm mt-4">
                                 <HowIs temperature={this.state.temperature[0]}/>
